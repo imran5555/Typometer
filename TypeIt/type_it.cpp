@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QtCore>
-
+#include <QKeyEvent>
 #include "ui_type_it.h"
 #include "about_me.h"
 #include "result.h"
@@ -76,11 +76,24 @@ void Type_It::on_getRandom_clicked()
 
 QTime myTimer;
 
+QString main1;
+QStringList main_list1;
+int indx=0;
+int lastIndx=0;
+std::vector <int> stat;
+bool isStarted=false;
 void Type_It::on_start_clicked()
 {
     myTimer.start();
     ui->start->setText("STARTED");
+    main1 = ui->textBrowser->toPlainText();
+    main_list1 = main1.split("", QString::SkipEmptyParts);
+    lastIndx=main1.size()-1;
+    for (int j=0;j<=lastIndx;j++)
+        stat.push_back(0);
+    isStarted=true;
 }
+
 
 void Type_It::on_giveUp_clicked()
 {
@@ -97,4 +110,25 @@ void Type_It::on_giveUp_clicked()
     mDialog.setModal(true);
     mDialog.exec();
 }
+//my code starts here
+class keyEnterReceiver : public QObject
+{
+    Q_OBJECT
+protected:
+    bool eventFilter(QObject* obj, QEvent* event);
+};
 
+void Type_It::keyPressEvent(QKeyEvent* event)
+{
+    int key = event->key();
+    qDebug() << QString(QChar(key));
+    if (key >= Qt::Key_Space && key <= Qt::Key_AsciiTilde && isStarted)
+    {
+        QString str=QString( QChar(key) );
+        if( str== main_list1[indx])
+            qDebug() << "true";
+        else
+            qDebug() << "false";
+        indx++;
+    }
+}

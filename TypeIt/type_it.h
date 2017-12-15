@@ -25,6 +25,7 @@ private slots:
 private:
     Ui::Type_It *ui;
     int checkErrors();
+    void keyPressEvent(QKeyEvent* event);
 };
 
 #endif // TYPE_IT_H
